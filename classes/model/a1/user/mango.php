@@ -19,20 +19,20 @@ abstract class Model_A1_User_Mango extends Mango {
 	// Specify config name so password gets hashed correctly (with the right salt pattern) when set in user
 	protected $_name = 'a1';
 
-	public function create()
+	public function create($safe = TRUE)
 	{
 		$this->password = $this->hash($this->password);
-		return parent::create();
+		return parent::create($safe);
 	}
 
-	public function update( $criteria = array() )
+	public function update( $criteria = array(), $safe = TRUE)
 	{
 		if ( isset($this->_changed['password']))
 		{
 			$this->password = $this->hash($this->password);
 		}
 
-		return parent::update($criteria);
+		return parent::update($criteria, $safe);
 	}
 
 	public function hash($password)
