@@ -56,7 +56,15 @@ abstract class A1_Core {
 	{
 		$this->_name       = $_name;
 		$this->_config     = $_config;
-		$this->_sess       = Session::instance( $this->_config['session_type'] );
+		try
+		{
+			$this->_sess   = Session::instance( $this->_config['session_type'] );
+		}
+		catch(ErrorException $e)
+		{
+			session_destroy();
+			$this->_sess   = Session::instance( $this->_config['session_type'] );
+		}
 
 		$cookie = isset($this->_config['cookie_key'])
 			? $this->_config['cookie_key']
