@@ -52,48 +52,32 @@ abstract class Model_A1_User_Jelly extends Jelly_Model {
 	{
 		$meta->fields(array(
 			'id' => new Field_Primary,
-			'username' => new Field_String(array(
+			'username' => Jelly::field('string', array(
 				'unique' => TRUE,
 					'rules' => array(
-						'not_empty' => NULL,
-						'min_length' => array(4),
-						'max_length' => array(50),
+						array('not_empty'),
+						array('min_length', array(':value', 4)),
+						array('max_length', array(':value', 4)),
 					)
 				)),
-			'password' => new Field_Password(array(
+			'password' => Jelly::field('password', array(
 				'hash_with' => array('Model_A1_User_Jelly', 'hash_password'),
 				'rules' => array(
-					'not_empty' => NULL,
-					'min_length' => array(6),
-					'max_length' => array(50),
+					array('not_empty'),
+					array('min_length', array(':value', 6)),
+					array('max_length', array(':value', 50)),
 				)
 			)),
-			'password_confirm' => new Field_Password(array(
+			'password_confirm' => Jelly::field('password', array(
 				'in_db' => FALSE,
-				'callbacks' => array(
-					'matches' => array('Model_A1_User_Jelly', 'password_matches')
-				),
 				'rules' => array(
-					'not_empty' => NULL,
-					'min_length' => array(6),
-					'max_length' => array(50),
+					array('not_empty'),
+					array('min_length', array(':value, 6')),
+					array('max_length', array(':value, 50')),
+					array('matches', array(':validation', 'password', ':field'))
 				)
 			)),
 		));
-	}
-
-	/**
-	 * Validate callback wrapper for checking password match
-	 * @param Validate $array
-	 * @param string $field
-	 * @return void
-	 */
-	public static function password_matches(Validate $array, $field)
-	{
-		if ($array['password'] !== $array[$field])
-		{
-			$array->error($field, 'matches', array('param1' => 'password'));
-		}
 	}
 
 	/**
