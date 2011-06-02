@@ -25,13 +25,13 @@ abstract class Model_A1_User_ORM extends ORM {
 		$this->_user_model     = Kohana::config($this->_config)->user_model;
 	}
 
-	public function save()
+	public function save(Validation $validation = NULL)
 	{
 		if(array_key_exists( $this->_columns['password'] ,$this->_changed))
 		{
 			$this->_object[ $this->_columns['password'] ] = A1::instance($this->_config)->hash($this->_object[ $this->_columns['password'] ]);
 		}
 
-		return parent::save();
+		return parent::save($validation);
 	}
 }
