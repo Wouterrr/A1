@@ -35,7 +35,7 @@ abstract class A1_Core {
 
 		if ( ! isset($_instances[$_name]))
 		{
-			$_config = Kohana::config($_name);
+			$_config = Kohana::$config->load($_name);
 			$_driver = isset($_config['driver']) ? $_config['driver'] : 'ORM';
 			$_class  = 'A1_' . ucfirst($_driver);
 
