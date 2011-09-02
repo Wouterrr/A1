@@ -21,8 +21,8 @@ abstract class Model_A1_User_ORM extends ORM {
 	{
 		parent::_initialize();
 
-		$this->_columns        = Kohana::config($this->_config)->columns;
-		$this->_user_model     = Kohana::config($this->_config)->user_model;
+		$this->_columns        = Kohana::$config->load($this->_config)->columns;
+		$this->_user_model     = Kohana::$config->load($this->_config)->user_model;
 	}
 
 	public function save(Validation $validation = NULL)
