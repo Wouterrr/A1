@@ -21,5 +21,6 @@ return array(
 
 	'session'  => array(
 		'type'        => 'native' // native or database
-	)
+	),
+	'cache'	   => FALSE		// Disabled/Enable cache-control 
 );
