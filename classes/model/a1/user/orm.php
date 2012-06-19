@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 /* 
  * Abstract A1 Authentication User Model
@@ -27,9 +27,9 @@ abstract class Model_A1_User_ORM extends ORM {
 
 	public function save(Validation $validation = NULL)
 	{
-		if(array_key_exists( $this->_columns['password'] ,$this->_changed))
+		if (array_key_exists($this->_columns['password'], $this->_changed))
 		{
-			$this->_object[ $this->_columns['password'] ] = A1::instance($this->_config)->hash($this->_object[ $this->_columns['password'] ]);
+			$this->_object[$this->_columns['password']] = A1::instance($this->_config)->hash($this->_object[$this->_columns['password']]);
 		}
 
 		return parent::save($validation);

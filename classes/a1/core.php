@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 /**
  * User AUTHENTICATION module for Kohana PHP Framework using bcrypt
  *
@@ -37,12 +37,12 @@ abstract class A1_Core {
 		{
 			$_config = Kohana::$config->load($_name);
 			$_driver = isset($_config['driver']) ? $_config['driver'] : 'ORM';
-			$_class  = 'A1_' . ucfirst($_driver);
+			$_class  = 'A1_'.ucfirst($_driver);
 
 			$_instances[$_name] = new $_class($_name, $_config);
 		}
 
-		if ( CRYPT_BLOWFISH !== 1)
+		if (CRYPT_BLOWFISH !== 1)
 		{
 			throw new Kohana_Exception('This server does not support bcrypt hashing');
 		}
@@ -60,7 +60,7 @@ abstract class A1_Core {
 		$this->_name       = $_name;
 		$this->_config     = $_config;
 
-		if ( isset($this->_config['cookie']))
+		if (isset($this->_config['cookie']))
 		{
 			if ( ! isset($this->_config['cookie']['key']))
 			{
@@ -72,7 +72,7 @@ abstract class A1_Core {
 
 		if ( ! isset($this->_config['session']['key']))
 		{
-			$this->_config['session']['key'] = 'a1_' . $this->_name;
+			$this->_config['session']['key'] = 'a1_'.$this->_name;
 		}
 	}
 
@@ -86,7 +86,7 @@ abstract class A1_Core {
 	{
 		if ( ! isset($this->_sess))
 		{
-			$this->_sess = Session::instance( $this->_config['session']['type'], $id);
+			$this->_sess = Session::instance($this->_config['session']['type'], $id);
 		}
 
 		return $this->_sess;
@@ -114,7 +114,7 @@ abstract class A1_Core {
 			$this->_user = $this->find_user();
 		}
 
-		if ( is_object($this->_user) && $this->_config['prevent_browser_cache'] === TRUE)
+		if (is_object($this->_user) AND $this->_config['prevent_browser_cache'] === TRUE)
 		{
 			// prevent browser caching of all responses when a user is logged in
 			Request::$initial->response()->headers('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
@@ -145,9 +145,9 @@ abstract class A1_Core {
 		$user = $this->session()->get($this->_config['session']['key']);
 
 		// User found in session, return
-		if ( is_object($user))
+		if (is_object($user))
 		{
-			if ( $user->loaded())
+			if ($user->loaded())
 			{
 				return $user;
 			}
@@ -160,19 +160,19 @@ abstract class A1_Core {
 			}
 		}
 
-		if ( $this->_config['cookie']['lifetime'])
+		if ($this->_config['cookie']['lifetime'])
 		{
-			if ( ($token = Cookie::get($this->_config['cookie']['key'])))
+			if (($token = Cookie::get($this->_config['cookie']['key'])))
 			{
 				list($hash, $username) = explode('.', $token, 2);
 
-				if ( strlen($hash) === 32 && $username !== NULL)
+				if (strlen($hash) === 32 AND $username !== NULL)
 				{
 					// load user using username
 					$user = $this->_load_user($username);
 
 					// validates token vs hash
-					if ( $user->loaded() && $this->check($hash, $user->{$this->_config['columns']['token']}))
+					if ($user->loaded() AND $this->check($hash, $user->{$this->_config['columns']['token']}))
 					{
 						return $this->complete_login($user,TRUE);
 					}
@@ -191,12 +191,12 @@ abstract class A1_Core {
 	 */
 	public function failed_login($user)
 	{
-		if ( isset($this->_config['columns']['failed_attempts']))
+		if (isset($this->_config['columns']['failed_attempts']))
 		{
 			$this->_increment_failed_attempts($user);
 		}
 
-		if ( isset($this->_config['columns']['last_attempt']))
+		if (isset($this->_config['columns']['last_attempt']))
 		{
 			$this->_set_last_attempt($user);
 		}
@@ -215,13 +215,13 @@ abstract class A1_Core {
 	 */
 	public function complete_login($user, $remember = FALSE)
 	{
-		if ( $remember === TRUE && $this->_config['cookie']['lifetime'])
+		if ($remember === TRUE && $this->_config['cookie']['lifetime'])
 		{
 			$token = text::random('alnum', 32);
 
 			$user->{$this->_config['columns']['token']} = $this->hash($token);
 
-			Cookie::set($this->_config['cookie']['key'], $token . '.' . $user->{$this->_config['columns']['username']}, $this->_config['cookie']['lifetime']);
+			Cookie::set($this->_config['cookie']['key'], $token.'.'.$user->{$this->_config['columns']['username']}, $this->_config['cookie']['lifetime']);
 		}
 
 		if ( isset($this->_config['columns']['failed_attempts']))
@@ -271,7 +271,7 @@ abstract class A1_Core {
 	 */
 	public function login($username, $password, $remember = FALSE)
 	{
-		if ( empty($password))
+		if (empty($password))
 		{
 			return FALSE;
 		}
@@ -285,7 +285,7 @@ abstract class A1_Core {
 			return FALSE;
 		}
 
-		if ( isset($this->_config['columns']['failed_attempts']) && isset($this->_config['columns']['last_attempt']) && count(Arr::get($this->_config, 'rate_limits', array())))
+		if (isset($this->_config['columns']['failed_attempts']) AND isset($this->_config['columns']['last_attempt']) AND count(Arr::get($this->_config, 'rate_limits', array())))
 		{
 			// rate limiting active
 			$attempt = 1 + (int) $this->_get_failed_attempts($user);
@@ -293,15 +293,15 @@ abstract class A1_Core {
 				? $user->{$this->_config['columns']['last_attempt']}
 				: NULL;
 
-			if ( $attempt > 1 && ! empty($last))
+			if ($attempt > 1 AND ! empty($last))
 			{
 				ksort($this->_config['rate_limits']);
 
-				foreach ( array_reverse($this->_config['rate_limits'], TRUE) as $attempts => $time)
+				foreach (array_reverse($this->_config['rate_limits'], TRUE) as $attempts => $time)
 				{
-					if ( $attempt > $attempts)
+					if ($attempt > $attempts)
 					{
-						if ( $last + $time > time())
+						if ($last + $time > time())
 						{
 							// user has to wait some more before being allowed to login again
 							throw new A1_Rate_Exception('Login not allowed. Rate limit active', $last + $time);
@@ -335,7 +335,7 @@ abstract class A1_Core {
 	 */
 	public function check_password($user, $password)
 	{
-		return $user->loaded() && $this->check($password, $user->{$this->_config['columns']['password']});
+		return $user->loaded() AND $this->check($password, $user->{$this->_config['columns']['password']});
 	}
 
 	/**
@@ -348,12 +348,12 @@ abstract class A1_Core {
 	{
 		unset($this->_user);
 
-		if ( Cookie::get($this->_config['cookie']['key']))
+		if (Cookie::get($this->_config['cookie']['key']))
 		{
 			Cookie::delete($this->_config['cookie']['key']);
 		}
 
-		if ( $destroy === TRUE)
+		if ($destroy === TRUE)
 		{
 			$this->session()->destroy();
 		}

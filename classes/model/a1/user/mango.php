@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct access allowed.');
 
 /* 
  * Abstract A1 Authentication User Model
@@ -30,9 +30,9 @@ abstract class Model_A1_User_Mango extends Mango {
 		return parent::create($safe);
 	}
 
-	public function update( $criteria = array(), $safe = TRUE)
+	public function update($criteria = array(), $safe = TRUE)
 	{
-		if ( isset($this->_changed['password']))
+		if (isset($this->_changed['password']))
 		{
 			$this->password = $this->hash($this->password);
 		}
