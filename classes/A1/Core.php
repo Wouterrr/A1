@@ -217,7 +217,7 @@ abstract class A1_Core {
 	{
 		if ( $remember === TRUE && $this->_config['cookie']['lifetime'])
 		{
-			$token = text::random('alnum', 32);
+			$token = Text::random('alnum', 32);
 
 			$user->{$this->_config['columns']['token']} = $this->hash($token);
 
